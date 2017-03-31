@@ -1,6 +1,6 @@
 galaxy_info:
-  author: Insert author(s) here
-  description: Insert description here
+  author: Michel Weitbrecht
+  description: Sets up a zfs storage to share filesystems via NFS
   company: stuvus (https://stuvus.uni-stuttgart.de)
 
   license: CC-BY-SA
@@ -19,6 +19,8 @@ galaxy_info:
 
   galaxy_tags:
     - stuvus
-    - Insert ansible galaxy tags here
+    - zfs
+    - nfs
+    - vm
 
 dependencies: []
