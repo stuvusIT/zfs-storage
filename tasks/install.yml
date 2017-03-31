@@ -1,0 +1,10 @@
+---
+- name: Install apt packages
+  apt:
+    name: "{{ item }}"
+  with_items:
+    - zfsutils-linux
+    - zfs-initramfs
+    - zfs-zed
+    - zfs-doc
+when: ansible_pkg_mgr == "apt"
