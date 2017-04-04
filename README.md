@@ -13,16 +13,16 @@ an apt-based package manager with source version 16.04 or later, as zfs isn't in
 This role has four main variables: `root_prefix` sets a prefix filesystem that is applied to all filesystems and zvols (Default: `tank`). `defaults`, `filesystems`, `zvols` are described in the following sections.
 
 ### defaults
-`defaults` expects a dict defining groups containing zfs attributes. This way, different default zfs attributes can be used for different filesystems/zvols. Each dict entry has a `name` variable and a `attributes` dict defining zfs attributes (using the same keys and values as ZFS does).
+`defaults` expects a dict of dicts containing zfs attributes. This way, different default zfs attributes can be used for different filesystems/zvols. 
 
 ### filesystems
-`filesystems` is a dict that contains zfs filesystems and their attributes. Each filesystem can have the following variables:
+`filesystems` is a list that contains zfs filesystems with their groups and attributes. Each entry can have the following variables:
 `name` (mandatory) - the filesystem name (`root_prefix` will be prepended). Missing parent filesystems will be created without any specific zfs attributes set.
 `default_groups` is a list of default groups defined above in `default`. Attributes defined in multiple groups will be overridden using the list ordering.
 `attributes` is a dict that contains attributes that should be set, overriding the defaults. Again, keys and values are adopted directly.
 
 ### zvols
-`zvols` is a dict that contains ZVOL configurations. Each entry has the following variables:
+`zvols` is a list that contains ZVOL configurations. Each entry has the following variables:
 	`name` (mandatory) - the zvol name. `root_prefix` will again be applied and missing parent filesystems created. This name is used as iSCSI target name, if `initator_name` is set.
 	`default_groups` - usage see above
 	`attributes` - usage see above
@@ -87,7 +87,7 @@ None
 
 This example defines three default groups, two filesystems and two zvols. The `zfs` group is used by all filesystems and zvols and specifies the compression and acl type to be used. The other two default groups define quota/reservation defaults for filesystems (`vm-fs`) and volume size and blocksize for zvols (`vm-image`).
 
-Two filesystems are created: `testing/wiki` is exported with read and write access, usable by `172.27.100.100`. The `testing` filesystem would normally be created automatically, if `testing/wiki` is specified, but in this case we want to set further attributes, namely the quota of 500G (applying to all children of `testing`).
+Two filesystems are created: `testing/wiki` is exported with read and write access, usable by `172.27.100.100`. The `testing` filesystem would normally be created automatically, if `testing/wiki` is specified, but in this case we want to set further attributes, namely the quota of `500G` (applying to all children of `testing`).
 Two zvols are created and exported to the same initiator, and on the same local IP `172.27.100.99`. `testing/dns01` uses the default values for zvols defined in the `vm-image` group. `testing/ldap01` also uses them, but overrides the volsize with the value `100G`.
 
 
