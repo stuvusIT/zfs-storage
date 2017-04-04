@@ -12,16 +12,16 @@ an apt-based package manager with source version 16.04 or later, as zfs isn't in
 
 This role has four main variables: `root_prefix` sets a prefix filesystem that is applied to all filesystems and zvols (Default: `tank`). `defaults`, `filesystems`, `zvols` are described in the following sections.
 
-###defaults
+### defaults
 `defaults` expects a dict defining groups containing zfs attributes. This way, different default zfs attributes can be used for different filesystems/zvols. Each dict entry has a `name` variable and a `attributes` dict defining zfs attributes (using the same keys and values as ZFS does).
 
-###filesystems
+### filesystems
 `filesystems` is a dict that contains zfs filesystems and their attributes. Each filesystem can have the following variables:
 `name` (mandatory) - the filesystem name (`root_prefix` will be prepended). Missing parent filesystems will be created without any specific zfs attributes set.
 `default_groups` is a list of default groups defined above in `default`. Attributes defined in multiple groups will be overridden using the list ordering.
 `attributes` is a dict that contains attributes that should be set, overriding the defaults. Again, keys and values are adopted directly.
 
-###zvols
+### zvols
 `zvols` is a dict that contains ZVOL configurations. Each entry has the following variables:
 	`name` (mandatory) - the zvol name. `root_prefix` will again be applied and missing parent filesystems created. This name is used as iSCSI target name, if `initator_name` is set.
 	`default_groups` - usage see above
