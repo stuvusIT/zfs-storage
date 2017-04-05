@@ -10,31 +10,39 @@ an apt-based package manager with source version 16.04 or later, as zfs isn't in
 
 ## Role Variables
 
-This role has four main variables: `root_prefix` sets a prefix filesystem that is applied to all filesystems and zvols (Default: `tank`). `defaults`, `filesystems`, `zvols` are described in the following sections.
-
-### defaults
-`defaults` expects a dict of dicts containing zfs attributes. This way, different default zfs attributes can be used for different filesystems/zvols. 
+| Name                  | Description                                                                                 |
+|-----------------------|---------------------------------------------------------------------------------------------|
+| `root_prefix`         | prefix filesystem that is applied to all filesystems and zvols (Default: `tank`)            |
+| `defaults`            | dict containing zfs attributes that will be applied to all configured zfs filesystems/zvols |
+| `groups`              | dict of dicts containing zfs attributes                                                     |
+| `filesystems`         | list of zfs filesystem definitions, see [below](#filesystems) for details                   |
+| `zvols`               | list of zvol definitions, see [below](#zvols) for details                                   |
 
 ### filesystems
-`filesystems` is a list that contains zfs filesystems with their groups and attributes. Each entry can have the following variables:
-`name` (mandatory) - the filesystem name (`root_prefix` will be prepended). Missing parent filesystems will be created without any specific zfs attributes set.
-`default_groups` is a list of default groups defined above in `default`. Attributes defined in multiple groups will be overridden using the list ordering.
-`attributes` is a dict that contains attributes that should be set, overriding the defaults. Again, keys and values are adopted directly.
+Each filesystem can define the following variables:
+
+| Name                  | Description                                                                                                                                |
+|-----------------------|--------------------------------------------------------------------------------------------------------------------------------------------|
+| `name` (mandatory)    | the filesystem name (`root_prefix` will be prepended). Missing parent filesystems will be created without any specific zfs attributes set. |
+| `groups`              | list containing the groups defined above. The zfs attributes of all groups will be applied and possibly overridden                         |
+| `attributes`          | a dict that contains attributes that should be set, overriding the defaults                                                                |
 
 ### zvols
-`zvols` is a list that contains ZVOL configurations. Each entry has the following variables:
-	`name` (mandatory) - the zvol name. `root_prefix` will again be applied and missing parent filesystems created. This name is used as iSCSI target name, if `initator_name` is set.
-	`default_groups` - usage see above
-	`attributes` - usage see above
-	`initiator_name` (needed for iSCSI) - name of the iSCSI initiator that is allowed to connect to this target
-	`iscsi_ip` (Default: `172.0.0.1`) - IP of the local interface where iSCSI should be advertised
+Each entry has the following variables:
+
+| Name                  | Description                                                                            |
+|-----------------------|----------------------------------------------------------------------------------------|
+| `name` (mandatory)    | the zvol name. `root_prefix` will again be applied and missing parent filesystems created. This name is used as iSCSI target name (with illegal characters replaced by `_`), if `initator_name` is set. |
+| `groups`              | list containing the groups defined above. The zfs attributes of all groups will be applied and possibly overridden|
+| `attributes`         | a dict that contains attributes that should be set, overriding the defaults |
+| `initiator_name`         | name of the iSCSI initiator that is allowed to connect to this targets (needed for iSCSI)|
+| `iscsi_ip`         | IP of the local interface where iSCSI should be advertised (Default: `172.0.0.1`)|
 
 Note: The size of every zvol needs to be specified using the zfs attribute `volsize`.
 
 ## Dependencies
 
 None
-
 
 ## Example Playbook
 
@@ -46,9 +54,9 @@ None
     - role: zfs-vm-storage
       root_prefix: "tank/vms"
       defaults:
-        zfs:
-          compression: "lz4"
-          acltype: "posixacl"
+        compression: "lz4"
+        acltype: "posixacl"
+      groups:
         vm-fs:
           reservation: "10G"
         vm-image:
@@ -58,24 +66,19 @@ None
         - name: "testing"
           attributes:
             - quota: "500G"
-          default_groups:
-            - zfs
         - name: "testing/wiki"
           attributes:
             - sharenfs: "rw=@172.100.100.100"
-          default_groups:
-            - zfs
+          groups:
             - vm-fs
       zvols:
         - name: "testing/dns01"
-          default_groups:
-            - zfs
+          groups:
             - vm-image
           initiator_name: "iqn.2005-03.org.open-iscsi:9e9c13ff76ac"
           iscsi_ip: "172.100.100.99"
         - name: "testing/ldap01"
-          default_groups:
-            - zfs
+          groups:
             - vm-image
           attributes:
             - volsize: "100G"
