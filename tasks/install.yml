@@ -7,4 +7,15 @@
     - zfs-initramfs
     - zfs-zed
     - zfs-doc
-when: ansible_pkg_mgr == "apt"
+  when: ansible_pkg_mgr == "apt"
+
+- name: Load kernel module
+  modprobe:
+    name: "zfs"
+    state: present
+
+- name: Add zfs module to /etc/modules
+  lineinfile:
+    dest: /etc/modules
+    line: 'zfs'
+    state: present
