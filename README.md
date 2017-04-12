@@ -31,14 +31,15 @@ zfs, nfs
 - hosts: zfsstorage
   roles:
     - role: zfs-vm-storage
-      parent_fs: tank/test
+      parent_fs: tank
       defaults:
         acltype: posixacl
         volsize: 50G
+        quota: 50G
       filesystems:
         - name: testing
           attributes:
-            acltype: noacl
+            quota: 200G
         - name: testing/wiki
           attributes:
             sharenfs: rw=@172.27.10.13
@@ -54,8 +55,8 @@ zfs, nfs
 ### Result
 
 This example creates two filesystems and two zvols.
-`tank/testing` has `acltype`=`noacl`
-`tank/testing/wiki` has `acltype`=`posixacl`, `sharenfs`=`rw=@172.27.10.13`, `compression`=`off`
+`tank/testing` has `acltype`=`posixacl`, `quota`=`200G`
+`tank/testing/wiki` has `acltype`=`posixacl`, `sharenfs`=`rw=@172.27.10.13`, `compression`=`off`, `quota`=`50G`
 `tank/testing/dns01` has `volsize`=`100G`
 `tank/testing/ldap01` has `volsize`=`50G`
 
