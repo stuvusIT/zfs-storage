@@ -1,11 +1,11 @@
 galaxy_info:
   author: Michel Weitbrecht
-  description: Sets up a zfs storage server to share filesystems via NFS or zvols via iSCSI
+  description: Configures ZFS filesystems and ZVOLs that can be shared via NFS
   company: stuvus (https://stuvus.uni-stuttgart.de)
 
   license: CC-BY-SA
 
-  min_ansible_version: 2.2
+  min_ansible_version: 2.3
 
   platforms:
     - name: Ubuntu
@@ -20,6 +20,5 @@ galaxy_info:
     - zfs
     - nfs
     - zvol
-    - iscsi
 
 dependencies: []
