@@ -21,8 +21,6 @@ Note: There are some zfs attributes that can only be set at creation. Also, `vol
 
 ## Dependencies
 
-zfs, nfs
-
 ## Example Playbook
 
 ### Playbook
