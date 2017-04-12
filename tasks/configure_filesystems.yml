@@ -6,6 +6,7 @@
   ignore_errors: True
   register: fs_exists
 
+# this task fails when the filesystem already exists and some attribute in {utf8only, normalization, casesensitivity} is already set and has a differing value than the variables dictate. This is done because these attributes cannot be changed after creation
 - name: Fail if readonly attributes would be changed
   fail: 
     msg: "tried to change readonly zfs attribute on already-existing filesystem {{ parent_fs }}/{{ fs.name }}\n {{ansible_zfs_datasets[0]}}"
