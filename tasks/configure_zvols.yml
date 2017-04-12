@@ -1,0 +1,43 @@
+---
+- name: Gather zfs zvol attributes for {{ parent_fs }}/{{ zvol.name }}
+  zfs_facts:
+    name: "{{ parent_fs }}/{{ zvol.name }}"
+    properties: "volsize,volblocksize"
+  ignore_errors: True
+  register: zvol_exists
+
+# this task fails when the zvol already exists and either volsize or volblocksize is already set and has a differing value than the variables dictate. This is done because these attributes cannot be changed after creation
+- name: Fail if readonly attributes would be changed
+  fail: 
+    msg: "tried to change readonly zfs attribute on already-existing filesystem {{ parent_fs }}/{{ zvol.name }}\n {{ansible_zfs_datasets[0]}}"
+  when: >
+    (zvol_exists |succeeded) and
+    (((zvol.attributes is defined and zvol.attributes.volsize is defined or default is defined and default.volsize is defined) and ansible_zfs_datasets[0].volsize != zvol.attributes.volsize |default(defaults.volsize) |default(ansible_zfs_datasets[0].volsize)) or
+        (((zvol.attributes is defined and zvol.attributes.volblocksize is defined or default is defined and default.volblocksize is defined) and ansible_zfs_datasets[0].volblocksize != zvol.attributes.volblocksize |default(defaults.volblocksize) |default(ansible_zfs_datasets[0].volblocksize))))
+
+- name: Try to create zvol {{ parent_fs }}/{{ zvol.name }} and set on-creation attributes
+  zfs:
+    name: "{{ parent_fs }}/{{ zvol.name }}"
+    state: present
+    volblocksize: "{{ zvol.attributes.volblocksize |default(defaults.volblocksize) |default(omit) }}"
+    volsize: "{{ zvol.attributes.volsize |default(defaults.volsize) |mandatory }}"
+  when: zvol_exists |failed
+
+- name: Configure zvol {{ parent_fs }}/{{ zvol.name }}
+  zfs:
+    name: "{{ parent_fs }}/{{ zvol.name }}"
+    state: present
+    checksum: "{{ zvol.attributes.checksum |default(defaults.checksum) |default(zfs_defaults.checksum) }}"
+    compression: "{{ zvol.attributes.compression |default(defaults.compression) |default(zfs_defaults.compression) }}"
+    copies: "{{ zvol.attributes.copies |default(defaults.copies) |default(zfs_defaults.copies) }}"
+    dedup: "{{ zvol.attributes.dedup |default(defaults.dedup) |default(zfs_defaults.dedup) }}"
+    logbias: "{{ zvol.attributes.logbias |default(defaults.logbias) |default(zfs_defaults.logbias) }}"
+    primarycache: "{{ zvol.attributes.primarycache |default(defaults.primarycache) |default(zfs_defaults.primarycache) }}"
+    snapshot_limit: "{{ zvol.attributes.snapshot_limit |default(defaults.snapshot_limit) |default(zfs_defaults.snapshot_limit) }}"
+    readonly: "{{ zvol.attributes.readonly |default(defaults.readonly) |default(zfs_defaults.readonly) }}"
+    redundant_metadata: "{{ zvol.attributes.redundant_metadata |default(defaults.redundant_metadata) |default(zfs_defaults.redundant_metadata) }}"
+    refreservation: "{{ zvol.attributes.refreservation |default(defaults.refreservation) |default(zfs_defaults.refreservation) }}"
+    reservation: "{{ zvol.attributes.reservation |default(defaults.reservation) |default(zfs_defaults.reservation) }}"
+    secondarycache: "{{ zvol.attributes.secondarycache |default(defaults.secondarycache) |default(zfs_defaults.secondarycache) }}"
+    snapdev: "{{ zvol.attributes.snapdev |default(defaults.snapdev) |default(zfs_defaults.snapdev) }}"
+    sync: "{{ zvol.attributes.sync |default(defaults.sync) |default(zfs_defaults.sync) }}"

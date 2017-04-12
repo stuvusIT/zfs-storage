@@ -1,46 +1,64 @@
-# Role Name
+# zfs-vm-storage
 
-A brief description of the role goes here.
+This role sets up ZFS filesystem that can be shared via NFS.
 
 
 ## Requirements
 
-Any pre-requisites that may not be covered by Ansible itself or the role should be mentioned here. For instance, if the role uses the EC2 module, it may be a good idea to mention in this section that the boto package is required.
+an apt-based package manager with source version 16.04 or later, as zfs isn't included in older versions.
 
 
 ## Role Variables
 
-A description of the settable variables for this role should go here, including any variables that are in defaults/main.yml, vars/main.yml, and any variables that can/should be set via parameters to the role. Any variables that are read from other roles and/or the global scope (ie. hostvars, group vars, etc.) should be mentioned here as well.
+| Name                  | Description                                                                                 |
+|-----------------------|---------------------------------------------------------------------------------------------|
+| `parent_fs`           | existing parent zfs filesystem for all filesystems and zvols (Default: `tank`)              |
+| `defaults`            | dict containing zfs attributes that will be applied to all configured zfs filesystems/zvols |
+| `filesystems`         | list of filesystems defined by a `name` and a dict of `attributes` (both mandatory)         |
+| `zvols`               | list of zvols defined by a `name` and a dict of `attributes` (both mandatory)               |
 
-```yml
-```
-
+Note: There are some zfs attributes that can only be set at creation. Also, `volsize` is a mandatory attribute for zvols.
 
 ## Dependencies
 
-A list of other roles hosted on Galaxy should go here, plus any details in regards to parameters that may need to be set for other roles, or variables that are used from other roles.
-
-
 ## Example Playbook
-
-Including an example of how to use your role (for instance, with variables passed in as parameters) is always nice for users too:
-
 
 ### Playbook
 
 ```yml
+- hosts: zfsstorage
+  roles:
+    - role: zfs-vm-storage
+      parent_fs: tank
+      defaults:
+        acltype: posixacl
+        volsize: 50G
+        quota: 50G
+      filesystems:
+        - name: testing
+          attributes:
+            quota: 200G
+        - name: testing/wiki
+          attributes:
+            sharenfs: rw=@172.27.10.13
+            compression: off
+      zvols:
+        - name: testing/dns01
+          attributes:
+            volsize: 100G
+        - name: testing/ldap01
+          attributes:
 ```
-
-
-### Vars
-
-```yml
-```
-
 
 ### Result
 
-A short summary what the playbook actually does.
+| Name                  | Type      | Attributes                                                                              |
+|-----------------------|-----------|-----------------------------------------------------------------------------------------|
+| `tank/testing`        | filesystem| `acltype`=`posixacl`, `quota`=`200G`                                                    |
+| `tank/testing/wiki`   | filesystem| `acltype`=`posixacl`, `sharenfs`=`rw=@172.27.10.13`, `compression`=`off`, `quota`=`50G` |
+| `tank/testing/dns01`  | zvol      | `volsize`=`100G`                                                                       |
+| `tank/testing/ldap01` | zvol      | `volsize`=`50G`                                                                          |
+
 
 
 ## License
@@ -50,4 +68,4 @@ This work is licensed under a [Creative Commons Attribution-ShareAlike 4.0 Inter
 
 ## Author Information
 
- * [Author Name (nickname)](github profile) _your-full-stuvus-email-address@stuvus.uni-stuttgart.de_
+ * [Michel Weitbrecht (SlothOfAnarchy)](https://github.com/SlothOfAnarchy) _michel.weitbrecht@stuvus.uni-stuttgart.de_

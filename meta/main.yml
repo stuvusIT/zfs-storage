@@ -1,13 +1,11 @@
 galaxy_info:
-  author: Insert author(s) here
-  description: Insert description here
+  author: Michel Weitbrecht
+  description: Configures ZFS filesystems and ZVOLs that can be shared via NFS
   company: stuvus (https://stuvus.uni-stuttgart.de)
 
   license: CC-BY-SA
 
-  min_ansible_version: 2.2
-
-  github_branch: master
+  min_ansible_version: 2.3
 
   platforms:
     - name: Ubuntu
@@ -19,6 +17,8 @@ galaxy_info:
 
   galaxy_tags:
     - stuvus
-    - Insert ansible galaxy tags here
+    - zfs
+    - nfs
+    - zvol
 
 dependencies: []

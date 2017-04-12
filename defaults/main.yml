@@ -1,0 +1,37 @@
+---
+parent_fs: tank
+zfs_defaults:
+  aclinherit: restricted
+  acltype: noacl
+  atime: on
+  canmount: on
+  checksum: on
+  compression: on
+  copies: 1
+  dedup: off
+  devices: on
+  exec: on
+  filesystem_limit: none
+  logbias: latency
+  mountpoint: none
+  nbmand: off
+  overlay: off
+  primarycache: all
+  quota: none
+  snapshot_limit: none
+  readonly: off
+  recordsize: 128K
+  redundant_metadata: all
+  refquota:  none
+  refreservation: none
+  relatime: off
+  reservation: none
+  secondarycache: all
+  setuid: on
+  sharesmb: off
+  sharenfs: off
+  snapdev: hidden
+  snapdir: hidden
+  sync: standard
+  vscan: off
+  xattr: on
