@@ -1,5 +1,5 @@
 ---
-- name: Install apt packages
+- name: Install ZFS apt packages
   apt:
     name: "{{ item }}"
   with_items:
