@@ -2,6 +2,7 @@
 - name: Install ZFS apt packages
   apt:
     name: "{{ item }}"
+    update_cache: yes
   with_items:
     - zfsutils-linux
     - zfs-initramfs
