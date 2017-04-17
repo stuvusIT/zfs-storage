@@ -1,4 +1,10 @@
 ---
+- name: Update apt repositories cache
+  apt:
+    update_cache: yes
+  changed_when: false
+  when: ansible_pkg_mgr == "apt"
+
 - name: Install ZFS apt packages
   apt:
     name: "{{ item }}"
