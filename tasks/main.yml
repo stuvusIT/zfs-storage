@@ -13,5 +13,5 @@
   loop_control:
     loop_var: "zvol"
   when: zvols is defined
-  
+
 - include: nfs.yml
