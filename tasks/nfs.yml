@@ -19,4 +19,4 @@
     name: nfs-kernel-server.service
     state: started
     enabled: true
-  when: no_nfs_datasets |failed
+  when: ansible_service_mgr == "systemd" and no_nfs_datasets |failed
