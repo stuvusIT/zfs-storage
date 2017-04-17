@@ -1,8 +1,13 @@
 ---
+- name: Update repositories cache (apt)
+  apt:
+    update_cache: yes
+  changed_when: false
+  when: ansible_pkg_mgr == "apt"
+
 - name: Install ZFS apt packages
   apt:
     name: "{{ item }}"
-    update_cache: yes
   with_items:
     - zfsutils-linux
     - zfs-initramfs
