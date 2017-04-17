@@ -5,9 +5,13 @@
     - "{{ filesystems }}"
   loop_control:
     loop_var: "fs"
+  when: filesystems is defined
+
 - include: configure_zvols.yml
   with_items: 
     - "{{ zvols }}"
   loop_control:
     loop_var: "zvol"
+  when: zvols is defined
+  
 - include: nfs.yml
