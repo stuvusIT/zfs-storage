@@ -1,4 +1,4 @@
-# zfs-vm-storage
+# zfs-storage
 
 This role sets up ZFS filesystem that can be shared via NFS.
 
