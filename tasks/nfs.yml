@@ -1,7 +1,7 @@
 ---
 - name: Check if NFS packages are needed
   zfs_facts:
-    name: "{{ parent_fs }}/{{ item.name }}"
+    name: "{{ zfs_parent_fs }}/{{ item.name }}"
     properties: "sharenfs"
   ignore_errors: True
   register: no_nfs_datasets

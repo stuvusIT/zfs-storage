@@ -1,33 +1,33 @@
 ---
-- name: Gather zfs filesystem attributes for {{ parent_fs }}/{{ fs.name }}
+- name: Gather zfs filesystem attributes for {{ zfs_parent_fs }}/{{ fs.name }}
   zfs_facts:
-    name: "{{ parent_fs }}/{{ fs.name }}"
+    name: "{{ zfs_parent_fs }}/{{ fs.name }}"
     properties: "utf8only,normalization,casesensitivity"
   failed_when: False
   register: fs_exists
 
 # this task fails when the filesystem already exists and some attribute in {utf8only, normalization, casesensitivity} is already set and has a differing value than the variables dictate. This is done because these attributes cannot be changed after creation
-- name: Fail if readonly attributes would be changed on {{ parent_fs }}/{{ fs.name }}
+- name: Fail if readonly attributes would be changed on {{ zfs_parent_fs }}/{{ fs.name }}
   fail: 
-    msg: "tried to change readonly zfs attribute on already-existing filesystem {{ parent_fs }}/{{ fs.name }}\n {{ansible_zfs_datasets[0]}}"
+    msg: "tried to change readonly zfs attribute on already-existing filesystem {{ zfs_parent_fs }}/{{ fs.name }}\n {{ansible_zfs_datasets[0]}}"
   when: >
     (fs_exists.msg is not defined) and
     (   ((fs.attributes is defined and fs.attributes.utf8only is defined or default is defined and default.utf8only is defined) and ansible_zfs_datasets[0].utf8only != fs.attributes.utf8only |default(zfs_storage_defaults.utf8only) |default(ansible_zfs_datasets[0].utf8only)) or
         ((fs.attributes is defined and fs.attributes.normalization is defined or default is defined and default.normalization is defined) and ansible_zfs_datasets[0].normalization != fs.attributes.normalization |default(zfs_storage_defaults.normalization) |default(ansible_zfs_datasets[0].normalization)) or
         ((fs.attributes is defined and fs.attributes.casesensitivity is defined or default is defined and default.casesensitivity is defined) and ansible_zfs_datasets[0].casesensitivity != fs.attributes.casesensitivity |default(zfs_storage_defaults.casesensitivity) |default(ansible_zfs_datasets[0].casesensitivity)))
 
-- name: Create filesystem {{ parent_fs }}/{{ fs.name }} and set on-creation attributes
+- name: Create filesystem {{ zfs_parent_fs }}/{{ fs.name }} and set on-creation attributes
   zfs:
-    name: "{{ parent_fs }}/{{ fs.name }}"
+    name: "{{ zfs_parent_fs }}/{{ fs.name }}"
     state: present
     utf8only: "{{ fs.attributes.utf8only|default(zfs_storage_defaults.utf8only) |default(omit) }}"
     normalization: "{{ fs.attributes.normalization|default(zfs_storage_defaults.normalization) |default(omit) }}"
     casesensitivity: "{{ fs.attributes.casesensitivity|default(zfs_storage_defaults.casesensitivity) |default(omit) }}"
   when: fs_exists.msg is defined
 
-- name: Configure filesystem {{ parent_fs }}/{{ fs.name }}
+- name: Configure filesystem {{ zfs_parent_fs }}/{{ fs.name }}
   zfs:
-    name: "{{ parent_fs }}/{{ fs.name }}"
+    name: "{{ zfs_parent_fs }}/{{ fs.name }}"
     state: present
     aclinherit: "{{ fs.attributes.aclinherit |default(zfs_storage_defaults.aclinherit) |default(zfs_defaults.aclinherit) }}"
     acltype: "{{ fs.attributes.acltype |default(zfs_storage_defaults.acltype) |default(zfs_defaults.acltype) }}"

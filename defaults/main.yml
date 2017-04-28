@@ -1,5 +1,5 @@
 ---
-parent_fs: tank
+zfs_parent_fs: tank
 zfs_defaults:
   aclinherit: restricted
   acltype: noacl
