@@ -14,7 +14,7 @@ an apt-based package manager with source version 16.04 or later, as zfs isn't in
 |-----------------------|---------------------------------------------------------------------------------------------|
 | `zfs_parent_fs`           | existing parent zfs filesystem for all filesystems and zvols (Default: `tank`)              |
 | `zfs_storage_defaults`| dict containing zfs attributes that will be applied to all configured zfs filesystems/zvols |
-| `filesystems`         | list of filesystems defined by a `name` and a dict of `attributes` (both mandatory)         |
+| `zfs_filesystems`         | list of zfs_filesystems defined by a `name` and a dict of `attributes` (both mandatory)         |
 | `zvols`               | list of zvols defined by a `name` and a dict of `attributes` (both mandatory)               |
 
 Note: There are some zfs attributes that can only be set at creation. Also, `volsize` is a mandatory attribute for zvols.
@@ -34,7 +34,7 @@ Note: There are some zfs attributes that can only be set at creation. Also, `vol
         acltype: posixacl
         volsize: 50G
         quota: 50G
-      filesystems:
+      zfs_filesystems:
         - name: testing
           attributes:
             quota: 200G

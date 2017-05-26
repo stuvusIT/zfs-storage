@@ -6,7 +6,7 @@
   ignore_errors: True
   register: no_nfs_datasets
   with_items:
-    - "{{ filesystems }}"
+    - "{{ zfs_filesystems }}"
   changed_when: ansible_zfs_datasets[0].sharenfs != "off"
 
 #no need to update cache, it's done in install.yml

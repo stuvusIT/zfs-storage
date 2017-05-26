@@ -2,10 +2,10 @@
 - include: install.yml
 - include: configure_filesystems.yml
   with_items: 
-    - "{{ filesystems }}"
+    - "{{ zfs_filesystems }}"
   loop_control:
     loop_var: "fs"
-  when: filesystems is defined
+  when: zfs_filesystems is defined
 
 - include: configure_zvols.yml
   with_items: 
