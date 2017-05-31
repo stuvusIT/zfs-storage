@@ -2,22 +2,21 @@
 
 This role sets up ZFS filesystem that can be shared via NFS.
 
-
 ## Requirements
 
-an apt-based package manager with source version 16.04 or later, as zfs isn't included in older versions.
-
+An apt-based package manager with source version 16.04 or later, as zfs isn't included in older versions.
 
 ## Role Variables
 
-| Name                  | Description                                                                                 |
-|-----------------------|---------------------------------------------------------------------------------------------|
-| `zfs_parent_fs`           | existing parent zfs filesystem for all filesystems and zvols (Default: `tank`)              |
-| `zfs_storage_defaults`| dict containing zfs attributes that will be applied to all configured zfs filesystems/zvols |
-| `zfs_filesystems`         | list of zfs_filesystems defined by a `name` and a dict of `attributes` (both mandatory)         |
-| `zvols`               | list of zvols defined by a `name` and a dict of `attributes` (both mandatory)               |
+| Name                  | Mandatory | Default | Description                                                                                 |
+|-----------------------|---|--|----------------------------------------------------------------------------------------|
+| `zfs_parent_fs`    | no | `tank` | Existing parent zfs filesystem for all filesystems and zvols             |
+| `zfs_storage_defaults`| no | `{}` | Dict containing zfs attributes that will be applied to all configured zfs filesystems/zvols |
+| `zfs_filesystems`   | no | `[]` | List of zfs_filesystems defined by a `name` and a dict of `attributes` (mandatory for each entry)         |
+| `zvols`               | no | | `[]` | List of zvols defined by a `name` and a dict of `attributes` (mandatory for each entry)               |
 
-Note: There are some zfs attributes that can only be set at creation. Also, `volsize` is a mandatory attribute for zvols.
+Note: There are some zfs attributes that can only be set at creation (see [man zfs](https://linux.die.net/man/8/zfs)).
+Also, `volsize` is a mandatory attribute for zvols.
 
 ## Dependencies
 
@@ -56,15 +55,12 @@ Note: There are some zfs attributes that can only be set at creation. Also, `vol
 |-----------------------|-----------|-----------------------------------------------------------------------------------------|
 | `tank/testing`        | filesystem| `acltype`=`posixacl`, `quota`=`200G`                                                    |
 | `tank/testing/wiki`   | filesystem| `acltype`=`posixacl`, `sharenfs`=`rw=@172.27.10.13`, `compression`=`off`, `quota`=`50G` |
-| `tank/testing/dns01`  | zvol      | `volsize`=`100G`                                                                       |
-| `tank/testing/ldap01` | zvol      | `volsize`=`50G`                                                                          |
-
-
+| `tank/testing/dns01`  | zvol      | `volsize`=`100G`                                                                        |
+| `tank/testing/ldap01` | zvol      | `volsize`=`50G`                                                                         |
 
 ## License
 
 This work is licensed under a [Creative Commons Attribution-ShareAlike 4.0 International License](http://creativecommons.org/licenses/by-sa/4.0/).
-
 
 ## Author Information
 
