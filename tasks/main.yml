@@ -14,4 +14,9 @@
     loop_var: "zvol"
   when: zvols is defined
 
-- include: nfs.yml
+- include: detect_nfs.yml
+  with_items:
+    - "{{ zfs_filesystems }}"
+  loop_control:
+    loop_var: "fs"
+  when: zfs_filesystems is defined
