@@ -1,66 +1,66 @@
 ---
-- name: Gather zfs filesystem attributes for {{ parent_fs }}/{{ fs.name }}
+- name: Gather zfs filesystem attributes for {% if zfs_parent_fs is defined %}{{ zfs_parent_fs }}/{% endif %}{{ fs.name }}
   zfs_facts:
-    name: "{{ parent_fs }}/{{ fs.name }}"
+    name: "{% if zfs_parent_fs is defined %}{{ zfs_parent_fs }}/{% endif %}{{ fs.name }}"
     properties: "utf8only,normalization,casesensitivity"
-  ignore_errors: True
+  failed_when: False
   register: fs_exists
 
 # this task fails when the filesystem already exists and some attribute in {utf8only, normalization, casesensitivity} is already set and has a differing value than the variables dictate. This is done because these attributes cannot be changed after creation
-- name: Fail if readonly attributes would be changed
+- name: Fail if readonly attributes would be changed on {% if zfs_parent_fs is defined %}{{ zfs_parent_fs }}/{% endif %}{{ fs.name }}
   fail: 
-    msg: "tried to change readonly zfs attribute on already-existing filesystem {{ parent_fs }}/{{ fs.name }}\n {{ansible_zfs_datasets[0]}}"
+    msg: "tried to change readonly zfs attribute on already-existing filesystem {% if zfs_parent_fs is defined %}{{ zfs_parent_fs }}/{% endif %}{{ fs.name }}\n {{ansible_zfs_datasets[0]}}"
   when: >
-    (fs_exists|succeeded) and
+    (fs_exists.msg is not defined) and
     (   ((fs.attributes is defined and fs.attributes.utf8only is defined or default is defined and default.utf8only is defined) and ansible_zfs_datasets[0].utf8only != fs.attributes.utf8only |default(zfs_storage_defaults.utf8only) |default(ansible_zfs_datasets[0].utf8only)) or
         ((fs.attributes is defined and fs.attributes.normalization is defined or default is defined and default.normalization is defined) and ansible_zfs_datasets[0].normalization != fs.attributes.normalization |default(zfs_storage_defaults.normalization) |default(ansible_zfs_datasets[0].normalization)) or
         ((fs.attributes is defined and fs.attributes.casesensitivity is defined or default is defined and default.casesensitivity is defined) and ansible_zfs_datasets[0].casesensitivity != fs.attributes.casesensitivity |default(zfs_storage_defaults.casesensitivity) |default(ansible_zfs_datasets[0].casesensitivity)))
 
-- name: Try to create filesystem {{ parent_fs }}/{{ fs.name }} and set on-creation attributes
+- name: Create filesystem {% if zfs_parent_fs is defined %}{{ zfs_parent_fs }}/{% endif %}{{ fs.name }} and set on-creation attributes
   zfs:
-    name: "{{ parent_fs }}/{{ fs.name }}"
+    name: "{% if zfs_parent_fs is defined %}{{ zfs_parent_fs }}/{% endif %}{{ fs.name }}"
     state: present
     utf8only: "{{ fs.attributes.utf8only|default(zfs_storage_defaults.utf8only) |default(omit) }}"
     normalization: "{{ fs.attributes.normalization|default(zfs_storage_defaults.normalization) |default(omit) }}"
     casesensitivity: "{{ fs.attributes.casesensitivity|default(zfs_storage_defaults.casesensitivity) |default(omit) }}"
-  when: fs_exists|failed
+  when: fs_exists.msg is defined
 
-- name: Configure filesystem {{ parent_fs }}/{{ fs.name }}
+- name: Configure filesystem {% if zfs_parent_fs is defined %}{{ zfs_parent_fs }}/{% endif %}{{ fs.name }}
   zfs:
-    name: "{{ parent_fs }}/{{ fs.name }}"
+    name: "{% if zfs_parent_fs is defined %}{{ zfs_parent_fs }}/{% endif %}{{ fs.name }}"
     state: present
-    aclinherit: "{{ fs.attributes.aclinherit |default(zfs_storage_defaults.aclinherit) |default(zfs_defaults.aclinherit) }}"
-    acltype: "{{ fs.attributes.acltype |default(zfs_storage_defaults.acltype) |default(zfs_defaults.acltype) }}"
-    atime: "{{ fs.attributes.atime |default(zfs_storage_defaults.atime) |default(zfs_defaults.atime) }}"
-    canmount: "{{ fs.attributes.canmount |default(zfs_storage_defaults.canmount) |default(zfs_defaults.canmount) }}"
-    checksum: "{{ fs.attributes.checksum |default(zfs_storage_defaults.checksum) |default(zfs_defaults.checksum) }}"
-    compression: "{{ fs.attributes.compression |default(zfs_storage_defaults.compression) |default(zfs_defaults.compression) }}"
-    copies: "{{ fs.attributes.copies |default(zfs_storage_defaults.copies) |default(zfs_defaults.copies) }}"
-    dedup: "{{ fs.attributes.dedup |default(zfs_storage_defaults.dedup) |default(zfs_defaults.dedup) }}"
-    devices: "{{ fs.attributes.devices |default(zfs_storage_defaults.devices) |default(zfs_defaults.devices) }}"
-    exec: "{{ fs.attributes.exec |default(zfs_storage_defaults.exec) |default(zfs_defaults.exec) }}"
-    filesystem_limit: "{{ fs.attributes.filesystem_limit |default(zfs_storage_defaults.filesystem_limit) |default(zfs_defaults.filesystem_limit) }}"
-    logbias: "{{ fs.attributes.logbias |default(zfs_storage_defaults.logbias) |default(zfs_defaults.logbias) }}"
-    #mountpoint is none by default
-    mountpoint: "{{ fs.attributes.mountpoint |default(zfs_storage_defaults.mountpoint) |default(zfs_defaults.mountpoint) }}"
-    nbmand: "{{ fs.attributes.nbmand |default(zfs_storage_defaults.nbmand) |default(zfs_defaults.nbmand) }}"
-    overlay: "{{ fs.attributes.overlay |default(zfs_storage_defaults.overlay) |default(zfs_defaults.overlay) }}"
-    primarycache: "{{ fs.attributes.primarycache |default(zfs_storage_defaults.primarycache) |default(zfs_defaults.primarycache) }}"
-    quota: "{{ fs.attributes.quota |default(zfs_storage_defaults.quota) |default(zfs_defaults.quota) }}"
-    snapshot_limit: "{{ fs.attributes.snapshot_limit |default(zfs_storage_defaults.snapshot_limit) |default(zfs_defaults.snapshot_limit) }}"
-    readonly: "{{ fs.attributes.readonly |default(zfs_storage_defaults.readonly) |default(zfs_defaults.readonly) }}"
-    recordsize: "{{ fs.attributes.recordsize |default(zfs_storage_defaults.recordsize) |default(zfs_defaults.recordsize) }}"
-    redundant_metadata: "{{ fs.attributes.redundant_metadata |default(zfs_storage_defaults.redundant_metadata) |default(zfs_defaults.redundant_metadata) }}"
-    refquota: "{{ fs.attributes.refquota |default(zfs_storage_defaults.refquota) |default(zfs_defaults.refquota) }}"
-    refreservation: "{{ fs.attributes.refreservation |default(zfs_storage_defaults.refreservation) |default(zfs_defaults.refreservation) }}"
-    relatime: "{{ fs.attributes.relatime |default(zfs_storage_defaults.relatime) |default(zfs_defaults.relatime) }}"
-    reservation: "{{ fs.attributes.reservation |default(zfs_storage_defaults.reservation) |default(zfs_defaults.reservation) }}"
-    secondarycache: "{{ fs.attributes.secondarycache |default(zfs_storage_defaults.secondarycache) |default(zfs_defaults.secondarycache) }}"
-    setuid: "{{ fs.attributes.setuid |default(zfs_storage_defaults.setuid) |default(zfs_defaults.setuid) }}"
-    sharesmb: "{{ fs.attributes.sharesmb |default(zfs_storage_defaults.sharesmb) |default(zfs_defaults.sharesmb) }}"
-    sharenfs: "{{ fs.attributes.sharenfs |default(zfs_storage_defaults.sharenfs) |default(zfs_defaults.sharenfs) }}"
-    snapdev: "{{ fs.attributes.snapdev |default(zfs_storage_defaults.snapdev) |default(zfs_defaults.snapdev) }}"
-    snapdir: "{{ fs.attributes.snapdir |default(zfs_storage_defaults.snapdir) |default(zfs_defaults.snapdir) }}"
-    sync: "{{ fs.attributes.sync |default(zfs_storage_defaults.sync) |default(zfs_defaults.sync) }}"
-    vscan: "{{ fs.attributes.vscan |default(zfs_storage_defaults.vscan) |default(zfs_defaults.vscan) }}"
-    xattr: "{{ fs.attributes.xattr |default(zfs_storage_defaults.xattr) |default(zfs_defaults.xattr) }}"
+    aclinherit: "{{ fs.attributes.aclinherit |default(zfs_storage_defaults.aclinherit) |default(zfs_base_defaults.aclinherit) }}"
+    acltype: "{{ fs.attributes.acltype |default(zfs_storage_defaults.acltype) |default(zfs_base_defaults.acltype) }}"
+    atime: "{{ fs.attributes.atime |default(zfs_storage_defaults.atime) |default(zfs_base_defaults.atime) }}"
+    canmount: "{{ fs.attributes.canmount |default(zfs_storage_defaults.canmount) |default(zfs_base_defaults.canmount) }}"
+    checksum: "{{ fs.attributes.checksum |default(zfs_storage_defaults.checksum) |default(zfs_base_defaults.checksum) }}"
+    compression: "{{ fs.attributes.compression |default(zfs_storage_defaults.compression) |default(zfs_base_defaults.compression) }}"
+    copies: "{{ fs.attributes.copies |default(zfs_storage_defaults.copies) |default(zfs_base_defaults.copies) }}"
+    dedup: "{{ fs.attributes.dedup |default(zfs_storage_defaults.dedup) |default(zfs_base_defaults.dedup) }}"
+    devices: "{{ fs.attributes.devices |default(zfs_storage_defaults.devices) |default(zfs_base_defaults.devices) }}"
+    exec: "{{ fs.attributes.exec |default(zfs_storage_defaults.exec) |default(zfs_base_defaults.exec) }}"
+    filesystem_limit: "{{ fs.attributes.filesystem_limit |default(zfs_storage_defaults.filesystem_limit) |default(zfs_base_defaults.filesystem_limit) }}"
+    logbias: "{{ fs.attributes.logbias |default(zfs_storage_defaults.logbias) |default(zfs_base_defaults.logbias) }}"
+    #mountpoint is omitted by default as it is generated by ZFS
+    mountpoint: "{{ fs.attributes.mountpoint |default(zfs_storage_defaults.mountpoint) |default(omit) }}"
+    nbmand: "{{ fs.attributes.nbmand |default(zfs_storage_defaults.nbmand) |default(zfs_base_defaults.nbmand) }}"
+    overlay: "{{ fs.attributes.overlay |default(zfs_storage_defaults.overlay) |default(zfs_base_defaults.overlay) }}"
+    primarycache: "{{ fs.attributes.primarycache |default(zfs_storage_defaults.primarycache) |default(zfs_base_defaults.primarycache) }}"
+    quota: "{{ fs.attributes.quota |default(zfs_storage_defaults.quota) |default(zfs_base_defaults.quota) }}"
+    snapshot_limit: "{{ fs.attributes.snapshot_limit |default(zfs_storage_defaults.snapshot_limit) |default(zfs_base_defaults.snapshot_limit) }}"
+    readonly: "{{ fs.attributes.readonly |default(zfs_storage_defaults.readonly) |default(zfs_base_defaults.readonly) }}"
+    recordsize: "{{ fs.attributes.recordsize |default(zfs_storage_defaults.recordsize) |default(zfs_base_defaults.recordsize) }}"
+    redundant_metadata: "{{ fs.attributes.redundant_metadata |default(zfs_storage_defaults.redundant_metadata) |default(zfs_base_defaults.redundant_metadata) }}"
+    refquota: "{{ fs.attributes.refquota |default(zfs_storage_defaults.refquota) |default(zfs_base_defaults.refquota) }}"
+    refreservation: "{{ fs.attributes.refreservation |default(zfs_storage_defaults.refreservation) |default(zfs_base_defaults.refreservation) }}"
+    relatime: "{{ fs.attributes.relatime |default(zfs_storage_defaults.relatime) |default(zfs_base_defaults.relatime) }}"
+    reservation: "{{ fs.attributes.reservation |default(zfs_storage_defaults.reservation) |default(zfs_base_defaults.reservation) }}"
+    secondarycache: "{{ fs.attributes.secondarycache |default(zfs_storage_defaults.secondarycache) |default(zfs_base_defaults.secondarycache) }}"
+    setuid: "{{ fs.attributes.setuid |default(zfs_storage_defaults.setuid) |default(zfs_base_defaults.setuid) }}"
+    sharesmb: "{{ fs.attributes.sharesmb |default(zfs_storage_defaults.sharesmb) |default(zfs_base_defaults.sharesmb) }}"
+    sharenfs: "{{ fs.attributes.sharenfs |default(zfs_storage_defaults.sharenfs) |default(zfs_base_defaults.sharenfs) }}"
+    snapdev: "{{ fs.attributes.snapdev |default(zfs_storage_defaults.snapdev) |default(zfs_base_defaults.snapdev) }}"
+    snapdir: "{{ fs.attributes.snapdir |default(zfs_storage_defaults.snapdir) |default(zfs_base_defaults.snapdir) }}"
+    sync: "{{ fs.attributes.sync |default(zfs_storage_defaults.sync) |default(zfs_base_defaults.sync) }}"
+    vscan: "{{ fs.attributes.vscan |default(zfs_storage_defaults.vscan) |default(zfs_base_defaults.vscan) }}"
+    xattr: "{{ fs.attributes.xattr |default(zfs_storage_defaults.xattr) |default(zfs_base_defaults.xattr) }}"

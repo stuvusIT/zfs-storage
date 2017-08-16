@@ -1,0 +1,9 @@
+---
+- name: Check if NFS packages are needed
+  zfs_facts:
+    name: "{% if zfs_parent_fs is defined %}{{ zfs_parent_fs }}/{% endif %}{{ fs.name }}"
+    properties: "sharenfs"
+  ignore_errors: True
+  register: no_nfs_datasets
+  changed_when: ansible_zfs_datasets[0].sharenfs != "off"
+  notify: Install and start NFS
