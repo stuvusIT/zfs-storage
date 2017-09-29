@@ -1,20 +1,20 @@
 ---
-- include: install.yml
-- include: configure_filesystems.yml
+- import_tasks: install.yml
+- include_tasks: configure_filesystems.yml
   with_items: 
     - "{{ zfs_filesystems }}"
   loop_control:
     loop_var: "fs"
   when: zfs_filesystems is defined
 
-- include: configure_zvols.yml
+- include_tasks: configure_zvols.yml
   with_items: 
     - "{{ zvols }}"
   loop_control:
     loop_var: "zvol"
   when: zvols is defined
 
-- include: detect_nfs.yml
+- include_tasks: detect_nfs.yml
   with_items:
     - "{{ zfs_filesystems }}"
   loop_control:
