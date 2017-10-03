@@ -9,24 +9,21 @@
 # this task fails when the zvol already exists and either volsize or volblocksize is already set and has a differing value than the variables dictate. This is done because these attributes cannot be changed after creation
 - name: Fail if readonly attributes would be changed on {% if zfs_parent_fs is defined %}{{ zfs_parent_fs }}/{% endif %}{{ zvol.name }}
   fail: 
-    msg: "tried to change readonly zfs attribute on already-existing filesystem {% if zfs_parent_fs is defined %}{{ zfs_parent_fs }}/{% endif %}{{ zvol.name }}\n {{ansible_zfs_datasets[0]}}"
+    msg: "Tried to change readonly zfs attribute on already-existing filesystem {% if zfs_parent_fs is defined %}{{ zfs_parent_fs }}/{% endif %}{{ zvol.name }}\n {{ansible_zfs_datasets[0]}}"
   when: >
     (zvol_exists.msg is not defined) and
     (((zvol.attributes is defined and zvol.attributes.volsize is defined or default is defined and default.volsize is defined) and ansible_zfs_datasets[0].volsize != zvol.attributes.volsize |default(zfs_storage_defaults.volsize) |default(ansible_zfs_datasets[0].volsize)) or
         (((zvol.attributes is defined and zvol.attributes.volblocksize is defined or default is defined and default.volblocksize is defined) and ansible_zfs_datasets[0].volblocksize != zvol.attributes.volblocksize |default(zfs_storage_defaults.volblocksize) |default(ansible_zfs_datasets[0].volblocksize))))
 
-- name: Create zvol {% if zfs_parent_fs is defined %}{{ zfs_parent_fs }}/{% endif %}{{ zvol.name }} and set on-creation attributes
-  zfs:
-    name: "{% if zfs_parent_fs is defined %}{{ zfs_parent_fs }}/{% endif %}{{ zvol.name }}"
-    state: present
-    volblocksize: "{{ zvol.attributes.volblocksize |default(zfs_storage_defaults.volblocksize) |default(omit) }}"
-    volsize: "{{ zvol.attributes.volsize |default(zfs_storage_defaults.volsize) |mandatory }}"
-  when: zvol_exists.msg is defined
-
 - name: Configure zvol {% if zfs_parent_fs is defined %}{{ zfs_parent_fs }}/{% endif %}{{ zvol.name }}
   zfs:
     name: "{% if zfs_parent_fs is defined %}{{ zfs_parent_fs }}/{% endif %}{{ zvol.name }}"
     state: present
+
+    #these two attributes are only settable when creating the filesystem
+    volblocksize: "{% if zvol_exists.msg is defined %}{{ zvol.attributes.volblocksize |default(zfs_storage_defaults.volblocksize) |default(omit) }}{% else %}{{fs_exists.somethingnotdefined |default(omit)}}{% endif %}"
+    volsize: "{% if zvol_exists.msg is defined %}{{ zvol.attributes.volsize |default(zfs_storage_defaults.volsize) |mandatory }}{% else %}{{fs_exists.somethingnotdefined |default(omit)}}{% endif %}"
+
     checksum: "{{ zvol.attributes.checksum |default(zfs_storage_defaults.checksum) |default(zfs_base_defaults.checksum) }}"
     compression: "{{ zvol.attributes.compression |default(zfs_storage_defaults.compression) |default(zfs_base_defaults.compression) }}"
     copies: "{{ zvol.attributes.copies |default(zfs_storage_defaults.copies) |default(zfs_base_defaults.copies) }}"
