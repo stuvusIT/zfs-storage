@@ -6,6 +6,9 @@
   loop_control:
     loop_var: "fs"
   when: zfs_filesystems is defined
+  tags:
+    - zfs
+    - zfs_filesystems
 
 - include_tasks: configure_zvols.yml
   with_items: 
@@ -13,6 +16,9 @@
   loop_control:
     loop_var: "zvol"
   when: zvols is defined
+  tags:
+    - zfs
+    - zfs_zvols
 
 - include_tasks: detect_nfs.yml
   with_items:
@@ -20,3 +26,6 @@
   loop_control:
     loop_var: "fs"
   when: zfs_filesystems is defined
+  tags:
+    - zfs
+    - zfs_nfs

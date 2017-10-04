@@ -9,14 +9,14 @@ An apt-based package manager with source version 16.04 or later, as ZFS isn't in
 ## Role Variables
 
 | Name                   | Default / Mandatory | Description                                                                                                     |
-|------------------------|---------------------|-----------------------------------------------------------------------------------------------------------------|
+|:-----------------------|:-------------------:|:----------------------------------------------------------------------------------------------------------------|
 | `zfs_parent_fs`        |                     | Existing parent ZFS filesystem for all filesystems and zvols that is optionally prepended to all configurations |
-| `zfs_storage_defaults` | `{}`                | Dict containing ZFS attributes that will be applied to all configured ZFS filesystems/zvols                     |
-| `zfs_filesystems`      | `[]`                | List of zfs_filesystems defined by a `name` and a dict of `attributes` (mandatory for each entry)               |
-| `zvols`                | `[]`                | List of zvols defined by a `name` and a dict of `attributes` (mandatory for each entry)                         |
+| `zfs_storage_defaults` |        `{}`         | Dict containing ZFS attributes that will be applied to all configured ZFS filesystems/zvols                     |
+| `zfs_filesystems`      |        `[]`         | List of zfs_filesystems defined by a `name` and a dict of `attributes` (mandatory for each entry)               |
+| `zvols`                |        `[]`         | List of zvols defined by a `name` and a dict of `attributes` (mandatory for each entry)                         |
 
-Note: There are some ZFS attributes that can only be set at creation (see [man zfs](https://linux.die.net/man/8/zfs)).
-Also, `volsize` is a mandatory attribute for zvols.
+Note: There are some ZFS attributes that can only be set at creation (see [man zfs](https://linux.die.net/man/8/zfs)). These are `utf8only`, `normalization` and `casesensitivity` for filesystems and `volsize` and `volblocksize` for ZVOLs. The respective task will fail if you try to change those.
+Also, `volsize` is a mandatory attribute for ZVOLs.
 
 ## Example Playbook
 
@@ -48,7 +48,7 @@ Also, `volsize` is a mandatory attribute for zvols.
 ### Result
 
 | Name                  | Type       | Attributes                                                                              |
-|-----------------------|------------|-----------------------------------------------------------------------------------------|
+|:----------------------|:-----------|:----------------------------------------------------------------------------------------|
 | `tank/testing`        | filesystem | `acltype`=`posixacl`, `quota`=`200G`                                                    |
 | `tank/testing/wiki`   | filesystem | `acltype`=`posixacl`, `sharenfs`=`rw=@172.27.10.13`, `compression`=`off`, `quota`=`50G` |
 | `tank/testing/dns01`  | zvol       | `volsize`=`100G`                                                                        |
