@@ -1,6 +1,6 @@
 # zfs-storage
 
-This role sets creates and configures ZFS filesystems and ZVOLs.
+This role installs ZFS on Linux and configures filesystems and ZVOLs. `nfs-kernel-server` will be installed if a configured filesystem makes use of the `sharenfs` attribute.
 
 ## Requirements
 
@@ -17,6 +17,11 @@ An apt-based package manager with source version 16.04 or later, as ZFS isn't in
 
 Note: There are some ZFS attributes that can only be set at creation (see [man zfs](https://linux.die.net/man/8/zfs)). These are `utf8only`, `normalization` and `casesensitivity` for filesystems and `volsize` and `volblocksize` for ZVOLs. The respective task will fail if you try to change those.
 Also, `volsize` is a mandatory attribute for ZVOLs.
+If an attribute is not defined, the ZFS default will be configured, except for these four attributes:
+- `acltype`=`posixacl`
+- `compression`=`on`
+- `relatime`=`on`
+- `xattr`=`sa`
 
 ## Example Playbook
 
