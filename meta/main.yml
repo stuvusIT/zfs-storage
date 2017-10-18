@@ -1,3 +1,4 @@
+---
 galaxy_info:
   author: Michel Weitbrecht
   description: Configures ZFS filesystems and ZVOLs that can be shared via NFS
