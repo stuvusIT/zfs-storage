@@ -7,6 +7,7 @@ This role installs ZFS on Linux and configures filesystems and ZVOLs.
 
 An apt-based package manager with source version 16.04 or later, as ZFS isn't included in older versions.
 `systemd` is required in order to scrub pools using timers.
+`python-jmespath` is needed on the machine executing this role.
 
 ## Role Variables
 

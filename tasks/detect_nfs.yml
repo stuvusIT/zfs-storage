@@ -1,7 +1,0 @@
----
-- name: Check whether {% if zfs_parent_fs is defined %}{{ zfs_parent_fs }}/{% endif %}{{ fs.name }} uses NFS
-  command: /bin/true
-  changed_when: fs.attributes.sharenfs|default("off") != "off"
-  delegate_to: localhost
-  become: no
-  notify: Install and start NFS

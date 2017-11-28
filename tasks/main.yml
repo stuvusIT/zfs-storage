@@ -20,12 +20,8 @@
     - zfs
     - zfs_zvols
 
-- include_tasks: detect_nfs.yml
-  with_items:
-    - "{{ zfs_filesystems }}"
-  loop_control:
-    loop_var: "fs"
-  when: zfs_filesystems is defined
+- include_tasks: nfs.yml
+  when: zfs_filesystems|json_query('[*].attributes.sharenfs')|difference([false,'off'])|length>0
   tags:
     - zfs
     - zfs_nfs
