@@ -15,13 +15,15 @@
     - zfs-doc
   when: ansible_pkg_mgr == "apt"
 
-- name: Load kernel module
-  modprobe:
-    name: "zfs"
-    state: present
-
 - name: Add zfs module to /etc/modules
   lineinfile:
     dest: /etc/modules
     line: 'zfs'
     state: present
+  register: kernelmodules
+
+- name: Reload kernel modules
+  service:
+    name: systemd-modules-load
+    state: restarted
+  when: kernelmodules.changed
