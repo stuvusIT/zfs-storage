@@ -1,0 +1,10 @@
+# {{ ansible_managed }}
+[Unit]
+Description=Scrub ZFS pool (aborting running scrubs)
+Requires=zfs.target
+After=zfs.target
+
+[Service]
+Type=oneshot
+ExecStartPre=-/sbin/zpool scrub -s %i
+ExecStart=/sbin/zpool scrub %i

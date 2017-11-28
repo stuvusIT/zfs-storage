@@ -29,3 +29,8 @@
   tags:
     - zfs
     - zfs_nfs
+
+- import_tasks: scrub_timer.yml
+  tags:
+    - zfs
+    - zfs_scrub

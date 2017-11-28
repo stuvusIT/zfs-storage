@@ -1,0 +1,29 @@
+---
+- name: Install systemd service file (zpool-scrub@.service)
+  template:
+    dest: /etc/systemd/system/zpool-scrub@.service
+    group: root
+    owner: root
+    mode: 0644
+    src: zpool-scrub@.service.j2
+  register: scrubservice
+
+- name: Install systemd timer file (zpool-scrub@.timer)
+  template:
+    dest: /etc/systemd/system/zpool-scrub@.timer
+    group: root
+    owner: root
+    mode: 0644
+    src: zpool-scrub@.timer.j2
+  register: scrubtimer
+
+- name: Enable scrub systemd timer
+  systemd:
+    name: "zpool-scrub@{{ pool.name | mandatory }}.timer"
+    enabled: "{{ pool.scrub |d(zfs_default_enable_scrub) }}"
+    state: "{% if pool.scrub |d(zfs_default_enable_scrub) %}started{% else %}stopped{% endif %}"
+    daemon_reload: "{{ scrubservice.changed or scrubtimer.changed }}"
+  with_items:
+    - "{{ zfs_zpools }}"
+  loop_control:
+    loop_var: "pool"
