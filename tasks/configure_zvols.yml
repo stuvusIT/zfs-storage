@@ -21,8 +21,8 @@
     state: present
 
     #these two attributes are only settable when creating the filesystem
-    volblocksize: "{% if zvol_exists.msg is defined %}{{ zvol.attributes.volblocksize |default(zfs_storage_defaults.volblocksize) |default(omit) }}{% else %}{{fs_exists.somethingnotdefined |default(omit)}}{% endif %}"
-    volsize: "{% if zvol_exists.msg is defined %}{{ zvol.attributes.volsize |default(zfs_storage_defaults.volsize) |mandatory }}{% else %}{{fs_exists.somethingnotdefined |default(omit)}}{% endif %}"
+    volblocksize: "{% if zvol_exists.msg is defined %}{{ zvol.attributes.volblocksize |default(zfs_storage_defaults.volblocksize) |default(omit) }}{% else %}{{zvol_exists.somethingnotdefined |default(omit)}}{% endif %}"
+    volsize: "{% if zvol_exists.msg is defined %}{{ zvol.attributes.volsize |default(zfs_storage_defaults.volsize) |mandatory }}{% else %}{{zvol_exists.somethingnotdefined |default(omit)}}{% endif %}"
 
     checksum: "{{ zvol.attributes.checksum |default(zfs_storage_defaults.checksum) |default(zfs_base_defaults.checksum) }}"
     compression: "{{ zvol.attributes.compression |default(zfs_storage_defaults.compression) |default(zfs_base_defaults.compression) }}"
