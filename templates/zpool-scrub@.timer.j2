@@ -1,0 +1,10 @@
+# {{ ansible_managed }}
+[Unit]
+Description=Scrub ZFS pool ({{ zfs_scrub_frequency }})
+
+[Timer]
+OnCalendar={{ zfs_scrub_frequency }}
+Persistent=true
+
+[Install]
+WantedBy=timers.target

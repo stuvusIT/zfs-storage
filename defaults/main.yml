@@ -2,6 +2,9 @@
 zfs_storage_defaults: {}
 zfs_filesystems: []
 zvols: []
+zfs_zpools: []
+zfs_default_enable_scrub: True
+zfs_scrub_frequency: weekly
 zfs_base_defaults:
   aclinherit: restricted
   atime: on

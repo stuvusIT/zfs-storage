@@ -1,15 +1,12 @@
 ---
-#no need to update cache, it's done in install.yml
 - name: Install NFS server package
   apt:
     name: nfs-kernel-server
   when: ansible_pkg_mgr == "apt"
-  listen: "Install and start NFS"
 
-- name: Enable and (re-)start NFS server
+- name: Enable and start NFS server
   service:
     name: nfs-kernel-server.service
     state: started
-    enabled: true
+    enabled: True
   when: ansible_service_mgr == "systemd"
-  listen: "Install and start NFS"
