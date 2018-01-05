@@ -1,7 +1,7 @@
 ---
 - import_tasks: install.yml
 - include_tasks: configure_filesystems.yml
-  with_items: 
+  with_items:
     - "{{ zfs_filesystems }}"
   loop_control:
     loop_var: "fs"
@@ -9,16 +9,6 @@
   tags:
     - zfs
     - zfs_filesystems
-
-- include_tasks: configure_zvols.yml
-  with_items: 
-    - "{{ zvols }}"
-  loop_control:
-    loop_var: "zvol"
-  when: zvols is defined
-  tags:
-    - zfs
-    - zfs_zvols
 
 - include_tasks: nfs.yml
   when: zfs_filesystems|json_query('[*].attributes.sharenfs')|difference([false,'off'])|length>0
@@ -30,3 +20,22 @@
   tags:
     - zfs
     - zfs_scrub
+
+- name: Delete NFS exports
+  file:
+    path: /etc/exports.d/zfs-storage-ansible.exports
+    state: absent
+  when: zfs_filesystems|json_query('[*].attributes.sharenfs')|difference([false,'off'])|length==0
+  tags:
+    - zfs
+    - zfs_nfs
+
+- include_tasks: configure_zvols.yml
+  with_items:
+    - "{{ zvols }}"
+  loop_control:
+    loop_var: "zvol"
+  when: zvols is defined
+  tags:
+    - zfs
+    - zfs_zvols

@@ -10,3 +10,9 @@
     state: started
     enabled: True
   when: ansible_service_mgr == "systemd"
+
+- name: Save NFS exports
+  copy:
+    src: /var/lib/nfs/etab
+    dest: /etc/exports.d/zfs-storage-ansible.exports
+    remote_src: True

@@ -1,7 +1,7 @@
 # zfs-storage
 
 This role installs ZFS on Linux and configures filesystems and ZVOLs. 
-`nfs-kernel-server` will be installed if a configured filesystem makes use of the `sharenfs` attribute.
+`nfs-kernel-server` will be installed if a configured filesystem makes use of the `sharenfs` attribute. NFS exports will be permanently configured in `/etc/exports.d/zfs-storage-ansible.exports`.
 
 ## Requirements
 
