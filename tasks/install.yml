@@ -22,6 +22,11 @@
     state: present
   register: kernelmodules
 
+- name: Configure ZFS kernel parameters
+  template:
+    src: zfs.conf.j2
+    dest: /etc/modprobe.d/zfs.conf
+
 - name: Reload kernel modules
   service:
     name: systemd-modules-load

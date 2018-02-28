@@ -11,15 +11,16 @@ An apt-based package manager with source version 16.04 or later, as ZFS isn't in
 
 ## Role Variables
 
-| Name                       | Default / Mandatory | Description                                                                                                                                                                                       |
-|:---------------------------|:-------------------:|:--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
-| `zfs_parent_fs`            |                     | Existing parent ZFS filesystem for all filesystems and zvols that is optionally prepended to all configurations                                                                                   |
-| `zfs_storage_defaults`     |        `{}`         | Dict containing ZFS attributes that will be applied to all configured ZFS filesystems/zvols                                                                                                       |
-| `zfs_filesystems`          |        `[]`         | List of zfs_filesystems defined by a `name` and a dict of `attributes` (mandatory for each entry)                                                                                                 |
-| `zfs_zpools`               |        `[]`         | List of dicts having a `name` (mandatory) and `scrub` (optional) key. `scrub` is a boolean and can disable scrubbing for this pool.                                                               |
-| `zvols`                    |        `[]`         | List of zvols defined by a `name` and a dict of `attributes` (mandatory for each entry)                                                                                                           |
-| `zfs_default_enable_scrub` |       `True`        | Whether to enable zpool scrubbing by default                                                                                                                                                      |
-| `zfs_scrub_frequency`      |      `weekly`       | Frequency of zfs scrubbing - already running scrubs will be aborted. See [systemd.time](https://www.freedesktop.org/software/systemd/man/systemd.time.html#Calendar%20Events) for allowed values. |
+| Name                           | Default / Mandatory | Description                                                                                                                                                                                       |
+|:-------------------------------|:-------------------:|:--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| `zfs_parent_fs`                |                     | Existing parent ZFS filesystem for all filesystems and zvols that is optionally prepended to all configurations                                                                                   |
+| `zfs_storage_defaults`         |        `{}`         | Dict containing ZFS attributes that will be applied to all configured ZFS filesystems/zvols                                                                                                       |
+| `zfs_filesystems`              |        `[]`         | List of zfs_filesystems defined by a `name` and a dict of `attributes` (mandatory for each entry)                                                                                                 |
+| `zfs_zpools`                   |        `[]`         | List of dicts having a `name` (mandatory) and `scrub` (optional) key. `scrub` is a boolean and can disable scrubbing for this pool.                                                               |
+| `zvols`                        |        `[]`         | List of zvols defined by a `name` and a dict of `attributes` (mandatory for each entry)                                                                                                           |
+| `zfs_default_enable_scrub`     |       `True`        | Whether to enable zpool scrubbing by default                                                                                                                                                      |
+| `zfs_scrub_frequency`          |      `weekly`       | Frequency of zfs scrubbing - already running scrubs will be aborted. See [systemd.time](https://www.freedesktop.org/software/systemd/man/systemd.time.html#Calendar%20Events) for allowed values. |
+| `zfs_kernel_module_parameters` |        `{}`         | Dict containing ZFS kernel module options to be set in `/etc/modprobe.d/zfs.conf`.                                                                                                                |
 
 Note: There are some ZFS attributes that can only be set at creation (see [man zfs](https://linux.die.net/man/8/zfs)). 
 These are `utf8only`, `normalization` and `casesensitivity` for filesystems and `volsize` and `volblocksize` for ZVOLs. 
@@ -45,6 +46,8 @@ If an attribute is not defined, the ZFS default will be configured (even if the 
         - name: tank
           scrub: False
       zfs_scrub_frequency: monthly
+      zfs_kernel_module_parameters:
+        zfs_arc_max: 30064771072 # Allow ARC to grow to 30GB
       zfs_storage_defaults:
         acltype: posixacl
         volsize: 50G
