@@ -1,5 +1,20 @@
 ---
 - import_tasks: install.yml
+  tags:
+    - zfs
+
+- include_tasks: install_nfs.yml
+  when: zfs_filesystems|json_query('[*].attributes.sharenfs')|difference([false,'off'])|length>0
+  tags:
+    - zfs
+    - zfs_nfs
+
+
+- import_tasks: scrub_timer.yml
+  tags:
+    - zfs
+    - zfs_scrub
+
 - include_tasks: configure_filesystems.yml
   with_items:
     - "{{ zfs_filesystems }}"
@@ -10,16 +25,15 @@
     - zfs
     - zfs_filesystems
 
-- include_tasks: nfs.yml
+- name: Save NFS exports
+  copy:
+    src: /var/lib/nfs/etab
+    dest: /etc/exports.d/zfs-storage-ansible.exports
+    remote_src: True
   when: zfs_filesystems|json_query('[*].attributes.sharenfs')|difference([false,'off'])|length>0
   tags:
     - zfs
     - zfs_nfs
-
-- import_tasks: scrub_timer.yml
-  tags:
-    - zfs
-    - zfs_scrub
 
 - name: Delete NFS exports
   file:
