@@ -11,8 +11,8 @@ galaxy_info:
   platforms:
     - name: Ubuntu
       versions:
-        - yakkety
         - xenial
+        - bionic
     - name: Debian
       versions:
         - jessie
