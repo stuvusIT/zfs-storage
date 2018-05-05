@@ -12,7 +12,6 @@
     - zfsutils-linux
     - zfs-initramfs
     - zfs-zed
-    - zfs-doc
   when: ansible_pkg_mgr == "apt"
 
 - name: Add zfs module to /etc/modules
