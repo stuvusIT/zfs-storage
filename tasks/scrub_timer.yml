@@ -1,4 +1,9 @@
 ---
+- name: Remove original scrub cron job
+  file:
+    path: /etc/cron.d/zfsutils-linux
+    state: absent
+
 - name: Install systemd service file (zpool-scrub@.service)
   template:
     dest: /etc/systemd/system/zpool-scrub@.service
