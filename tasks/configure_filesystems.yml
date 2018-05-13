@@ -59,3 +59,10 @@
     snapdir: "{{ fs.attributes.snapdir |default(zfs_storage_defaults.snapdir) |default(zfs_base_defaults.snapdir) }}"
     sync: "{{ fs.attributes.sync |default(zfs_storage_defaults.sync) |default(zfs_base_defaults.sync) }}"
     xattr: "{{ fs.attributes.xattr |default(zfs_storage_defaults.xattr) |default(zfs_base_defaults.xattr) }}"
+
+    "com.sun:auto-snapshot": "{{ fs.attributes.com_sun_auto_snapshot |default(zfs_storage_defaults.com_sun_auto_snapshot) |default(zfs_base_defaults.com_sun_auto_snapshot) | lower }}"
+    "com.sun:auto-snapshot:frequent": "{{ fs.attributes.com_sun_auto_snapshot_frequent |default(zfs_storage_defaults.com_sun_auto_snapshot_frequent) |default(zfs_base_defaults.com_sun_auto_snapshot_frequent) | lower }}"
+    "com.sun:auto-snapshot:hourly": "{{ fs.attributes.com_sun_auto_snapshot_hourly |default(zfs_storage_defaults.com_sun_auto_snapshot_hourly) |default(zfs_base_defaults.com_sun_auto_snapshot_hourly) | lower }}"
+    "com.sun:auto-snapshot:daily": "{{ fs.attributes.com_sun_auto_snapshot_daily |default(zfs_storage_defaults.com_sun_auto_snapshot_daily) |default(zfs_base_defaults.com_sun_auto_snapshot_daily) | lower }}"
+    "com.sun:auto-snapshot:weekly": "{{ fs.attributes.com_sun_auto_snapshot_weekly |default(zfs_storage_defaults.com_sun_auto_snapshot_weekly) |default(zfs_base_defaults.com_sun_auto_snapshot_weekly) | lower }}"
+    "com.sun:auto-snapshot:monthly": "{{ fs.attributes.com_sun_auto_snapshot_monthly |default(zfs_storage_defaults.com_sun_auto_snapshot_monthly) |default(zfs_base_defaults.com_sun_auto_snapshot_monthly) | lower }}"
