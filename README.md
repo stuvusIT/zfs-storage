@@ -6,7 +6,7 @@ This role installs ZFS on Linux and configures filesystems and ZVOLs.
 ## Requirements
 
 An apt-based package manager with source version 16.04 or later, as ZFS isn't included in older versions.
-`systemd` is required in order to scrub pools using timers.
+`systemd` is required in order to scrub pools using timers instead of distribution-specific cron jobs.
 `python-jmespath` is needed on the machine executing this role.
 
 ## Role Variables
@@ -32,6 +32,22 @@ If an attribute is not defined, the ZFS default will be configured (even if the 
 - `compression`=`on`
 - `relatime`=`on`
 - `xattr`=`sa`
+
+All default values for ZFS attributes can be seen in [the defaults](defaults/main.yml).
+
+In addition to the actual ZFS attributes described in the [man page](https://linux.die.net/man/8/zfs), this role sets attributes to control automatic snapshotting using tools such as  [zfs-auto-snapshot](https://github.com/zfsonlinux/zfs-auto-snapshot).
+This is achieved using the following variables, which are all set to `False` by default:
+
+| ZFS attribute                    | Variable name in this role       | Description                                                                                                                                                                                       |
+|:---------------------------------|:---------------------------------|:--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| `com.sun:auto-snapshot`          | `com_sun_auto_snapshot`          | Enable automatic snapshotting and cleaning (destroying) of snapshots using all available intervals for the current dataset (basically acts as if all the following attributes are set to `True`). |
+| `com.sun:auto-snapshot:frequent` | `com_sun_auto_snapshot_frequent` | Enable snapshotting and cleaning in 15min intervals.                                                                                                                                              |
+| `com.sun:auto-snapshot:hourly`   | `com_sun_auto_snapshot_hourly`   | Enable snapshotting and cleaning in hourly intervals.                                                                                                                                             |
+| `com.sun:auto-snapshot:daily`    | `com_sun_auto_snapshot_daily`    | Enable snapshotting and cleaning in daily intervals.                                                                                                                                              |
+| `com.sun:auto-snapshot:weekly`   | `com_sun_auto_snapshot_weekly`   | Enable snapshotting and cleaning in weekly intervals.                                                                                                                                             |
+| `com.sun:auto-snapshot:monthly`  | `com_sun_auto_snapshot_monthly`  | Enable snapshotting and cleaning in monthly intervals.                                                                                                                                            |
+
+
 
 ## Example Playbook
 
