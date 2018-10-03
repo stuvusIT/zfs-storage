@@ -38,3 +38,10 @@
     secondarycache: "{{ zvol.attributes.secondarycache |default(zfs_storage_defaults.secondarycache) |default(zfs_base_defaults.secondarycache) }}"
     snapdev: "{{ zvol.attributes.snapdev |default(zfs_storage_defaults.snapdev) |default(zfs_base_defaults.snapdev) }}"
     sync: "{{ zvol.attributes.sync |default(zfs_storage_defaults.sync) |default(zfs_base_defaults.sync) }}"
+
+    "com.sun:auto-snapshot": "{{ zvol.attributes.com_sun_auto_snapshot |default(zfs_storage_defaults.com_sun_auto_snapshot) |default(zfs_base_defaults.com_sun_auto_snapshot) | lower }}"
+    "com.sun:auto-snapshot:frequent": "{{ zvol.attributes.com_sun_auto_snapshot_frequent |default(zfs_storage_defaults.com_sun_auto_snapshot_frequent) |default(zfs_base_defaults.com_sun_auto_snapshot_frequent) | lower }}"
+    "com.sun:auto-snapshot:hourly": "{{ zvol.attributes.com_sun_auto_snapshot_hourly |default(zfs_storage_defaults.com_sun_auto_snapshot_hourly) |default(zfs_base_defaults.com_sun_auto_snapshot_hourly) | lower }}"
+    "com.sun:auto-snapshot:daily": "{{ zvol.attributes.com_sun_auto_snapshot_daily |default(zfs_storage_defaults.com_sun_auto_snapshot_daily) |default(zfs_base_defaults.com_sun_auto_snapshot_daily) | lower }}"
+    "com.sun:auto-snapshot:weekly": "{{ zvol.attributes.com_sun_auto_snapshot_weekly |default(zfs_storage_defaults.com_sun_auto_snapshot_weekly) |default(zfs_base_defaults.com_sun_auto_snapshot_weekly) | lower }}"
+    "com.sun:auto-snapshot:monthly": "{{ zvol.attributes.com_sun_auto_snapshot_monthly |default(zfs_storage_defaults.com_sun_auto_snapshot_monthly) |default(zfs_base_defaults.com_sun_auto_snapshot_monthly) | lower }}"

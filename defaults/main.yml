@@ -40,3 +40,11 @@ zfs_base_defaults:
   compression: on
   relatime: on
   xattr: sa
+
+# Attributes used by zfs-auto-snapshot
+  com_sun_auto_snapshot: False
+  com_sun_auto_snapshot_frequent: False
+  com_sun_auto_snapshot_hourly: False
+  com_sun_auto_snapshot_daily: False
+  com_sun_auto_snapshot_weekly: False
+  com_sun_auto_snapshot_monthly: False
