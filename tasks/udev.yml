@@ -1,0 +1,14 @@
+---
+- name: Write udev rule to set noop scheduler
+  template:
+    src: 60-zfs-hdd-noop-io-scheduler.rules.j2
+    dest: /etc/udev/rules.d/60-zfs-hdd-noop-io-scheduler.rules
+  register: udevrule
+
+- name: Reload udev rules
+  command: "udevadm control --reload"
+  when: udevrule.changed
+
+- name: Trigger udev rules
+  command: "udevadm trigger"
+  when: udevrule.changed
