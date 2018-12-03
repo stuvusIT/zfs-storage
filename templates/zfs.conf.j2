@@ -1,4 +1,4 @@
 # {{ ansible_managed }}
 {% if zfs_kernel_module_parameters %}
-options zfs{% for key,value in zfs_kernel_module_parameters.iteritems() %} {{ key }}={{ value }}{% endfor %}
+options zfs{% for key,value in zfs_kernel_module_parameters.items() %} {{ key }}={{ value }}{% endfor %}
 {% endif %}
