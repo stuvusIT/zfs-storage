@@ -25,7 +25,7 @@
       src: /var/lib/nfs/etab
       dest: /etc/exports.d/zfs-storage-ansible.exports
       remote_src: True
-    when: zfs_filesystems|json_query('[*].attributes.sharenfs')|difference([false,'off'])|length>0
+    when: zfs_save_nfs_exports and zfs_filesystems|json_query('[*].attributes.sharenfs')|difference([false,'off'])|length>0
     tags:
       - zfs_nfs
 
@@ -33,7 +33,7 @@
     file:
       path: /etc/exports.d/zfs-storage-ansible.exports
       state: absent
-    when: zfs_filesystems|json_query('[*].attributes.sharenfs')|difference([false,'off'])|length==0
+    when: zfs_save_nfs_exports and zfs_filesystems|json_query('[*].attributes.sharenfs')|difference([false,'off'])|length==0
     tags:
       - zfs_nfs
 
