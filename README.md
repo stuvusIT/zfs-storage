@@ -3,12 +3,16 @@
 This role installs ZFS on Linux and configures filesystems and ZVOLs. 
 `nfs-kernel-server` will be installed if a configured filesystem makes use of the `sharenfs` attribute.
 NFS exports will be permanently configured in `/etc/exports.d/zfs-storage-ansible.exports` if `zfs_save_nfs_exports` is set accordingly.
+The [ZFS PPAs from JonathanF](https://launchpad.net/~jonathonf) are used to install the latest ZFS release.
 
 ## Requirements
 
-Ubuntu version 16.04 or later or Debian stretch.
+One of the following distribution releases:
+- Debian stretch or buster
+- Ubuntu xenial, bionic, cosmic or devel
+
 `systemd` is required in order to scrub pools using timers instead of distribution-specific cron jobs.
-`python-jmespath` is needed on the machine executing this role.
+`python-jmespath` is needed on the machine executing this role to correctly determine the need for NFS.
 
 ## Role Variables
 

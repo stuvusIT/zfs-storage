@@ -3,31 +3,32 @@
   apt_key:
     id: 4AB0F789CBA31744CC7DA76A8CF63AD3F06FC659
     keyserver: keyserver.ubuntu.com
-  when: ansible_distribution == "Debian"
 
-- name: Add ZFS PPA for Debian
+- name: Add JonathanF ZFS PPA
   apt_repository:
-    repo: deb http://ppa.launchpad.net/jonathonf/zfs-debian/ubuntu xenial main
-  when: ansible_distribution == "Debian" and ansible_distribution_release == "stretch"
+    repo: "deb http://ppa.launchpad.net/jonathonf/{{ repo[ansible_distribution] }}/ubuntu {{ release[ansible_distribution_release] }} main"
+    filename: zfs-linux
+  vars:
+    repo:
+      Debian: zfs-debian
+      Ubuntu: zfs
+    release:
+      # Debian
+      stretch: xenial
+      buster: bionic
+      # Ubuntu
+      xenial: xenial
+      bionic: bionic
+      cosmic: cosmic
+      devel: devel
+  register: ppa
 
-- name: Install ZFS package
+- name: Install zfsutils-linux
   apt:
     name: zfsutils-linux
-
-- name: Add zfs module to /etc/modules
-  lineinfile:
-    dest: /etc/modules
-    line: 'zfs'
-    state: present
-  register: kernelmodules
 
 - name: Configure ZFS kernel parameters
   template:
     src: zfs.conf.j2
     dest: /etc/modprobe.d/zfs.conf
 
-- name: Reload kernel modules
-  service:
-    name: systemd-modules-load
-    state: restarted
-  when: kernelmodules.changed
