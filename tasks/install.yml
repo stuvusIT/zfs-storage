@@ -14,7 +14,7 @@
       Ubuntu: zfs
     release:
       # Debian
-      stretch: xenial
+      stretch: bionic
       buster: bionic
       # Ubuntu
       xenial: xenial
@@ -23,9 +23,9 @@
       devel: devel
   register: ppa
 
-- name: Install zfsutils-linux
+- name: Install zfs-dkms
   apt:
-    name: zfsutils-linux
+    name: zfs-dkms
 
 - name: Configure ZFS kernel parameters
   template:
