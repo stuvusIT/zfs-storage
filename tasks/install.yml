@@ -21,11 +21,21 @@
       bionic: bionic
       cosmic: cosmic
       devel: devel
-  register: ppa
 
 - name: Install zfs-dkms
   apt:
     name: zfs-dkms
+  register: apt
+  failed_when: False
+
+- name: Ensure ZFS module is loaded
+  modprobe:
+    name: zfs
+
+- name: Finish failed installation of zfs-dkms
+  apt:
+    name: zfs-dkms
+  when: "'stdout' in apt and 'The ZFS modules are not loaded' in apt.stdout"
 
 - name: Configure ZFS kernel parameters
   template:
