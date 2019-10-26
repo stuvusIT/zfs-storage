@@ -11,6 +11,7 @@
     owner: root
     mode: 0644
     src: zpool-scrub@.service.j2
+    validate: systemd-analyze verify %s
   register: scrubservice
 
 - name: Install systemd timer file (zpool-scrub@.timer)
@@ -20,6 +21,7 @@
     owner: root
     mode: 0644
     src: zpool-scrub@.timer.j2
+    validate: systemd-analyze verify %s
   register: scrubtimer
 
 - name: Enable scrub systemd timer
