@@ -8,7 +8,7 @@
 
 # this task fails when the zvol already exists and either volsize or volblocksize is already set and has a differing value than the variables dictate. This is done because these attributes cannot be changed after creation
 - name: Fail if readonly attributes would be changed on {% if zfs_parent_fs is defined %}{{ zfs_parent_fs }}/{% endif %}{{ zvol.name }}
-  fail: 
+  fail:
     msg: "Tried to change readonly zfs attribute on already-existing filesystem {% if zfs_parent_fs is defined %}{{ zfs_parent_fs }}/{% endif %}{{ zvol.name }}\n {{ansible_zfs_datasets[0]}}"
   when: >
     (zvol_exists.msg is not defined) and
