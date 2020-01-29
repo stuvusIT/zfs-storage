@@ -1,6 +1,6 @@
 # zfs-storage
 
-This role installs ZFS on Linux and configures filesystems and ZVOLs. 
+This role installs ZFS on Linux and configures filesystems and ZVOLs.
 `nfs-kernel-server` will be installed if a configured filesystem makes use of the `sharenfs` attribute.
 NFS exports will be permanently configured in `/etc/exports.d/zfs-storage-ansible.exports` if `zfs_save_nfs_exports` is set accordingly.
 The [ZFS PPAs from JonathanF](https://launchpad.net/~jonathonf) are used to install the latest ZFS release.
@@ -29,8 +29,8 @@ One of the following distribution releases:
 | `zfs_storage_drive_wwids`      | `[]`                | List of WWID strings of blockdevices in the pool. UDEV rules will be written to set the IO scheduler to `noop` for those devices. This is needed for partitioned or encrypted devices as ZFS only sets the scheduler to `noop` if it gets ahold of the whole drive. |
 | `zfs_save_nfs_exports`         | `True`              | Whether to save and delete (if not needed) a NFS export file for consistent exports across reboots.                                                                                                                                                                 |
 
-Note: There are some ZFS attributes that can only be set at creation (see [man zfs](https://linux.die.net/man/8/zfs)). 
-These are `utf8only`, `normalization` and `casesensitivity` for filesystems and `volsize` and `volblocksize` for ZVOLs. 
+Note: There are some ZFS attributes that can only be set at creation (see [man zfs](https://linux.die.net/man/8/zfs)).
+These are `utf8only`, `normalization` and `casesensitivity` for filesystems and `volsize` and `volblocksize` for ZVOLs.
 The respective task will fail if you try to change those.
 Also, `volsize` is a mandatory attribute for ZVOLs.
 
