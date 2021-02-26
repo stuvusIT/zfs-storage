@@ -3,11 +3,12 @@
   apt:
     name: nfs-kernel-server
   when: ansible_pkg_mgr == "apt"
+  notify:
+    - Restart NFS server
 
-- name: Enable and start NFS server
+- name: Enable NFS server
   service:
     name: nfs-kernel-server.service
-    state: started
     enabled: True
   when: ansible_service_mgr == "systemd"
 

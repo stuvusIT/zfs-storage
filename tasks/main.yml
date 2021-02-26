@@ -28,6 +28,8 @@
     when: zfs_save_nfs_exports and zfs_filesystems|json_query('[*].attributes.sharenfs')|difference([false,'off'])|length>0
     tags:
       - zfs_nfs
+    notify:
+      - Restart NFS server
 
   - name: Delete NFS exports
     file:
@@ -36,6 +38,8 @@
     when: zfs_save_nfs_exports and zfs_filesystems|json_query('[*].attributes.sharenfs')|difference([false,'off'])|length==0
     tags:
       - zfs_nfs
+    notify:
+      - Restart NFS server
 
   - include_tasks: configure_zvols.yml
     with_items:

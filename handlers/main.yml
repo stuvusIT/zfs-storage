@@ -1,0 +1,6 @@
+---
+- name: Restart NFS server
+  service:
+    name: nfs-kernel-server.service
+    state: restarted
+  when: ansible_service_mgr == "systemd"
