@@ -16,10 +16,12 @@
       # Debian
       stretch: bionic
       buster: bionic
+      bullseye: focal
       # Ubuntu
       xenial: xenial
       bionic: bionic
       cosmic: cosmic
+      focal: focal
       devel: devel
 
 - name: Install zfs-dkms
