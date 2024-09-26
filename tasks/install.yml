@@ -1,29 +1,4 @@
 ---
-- name: Add APT key for ZFS PPA
-  apt_key:
-    id: 4AB0F789CBA31744CC7DA76A8CF63AD3F06FC659
-    keyserver: keyserver.ubuntu.com
-
-- name: Add JonathanF ZFS PPA
-  apt_repository:
-    repo: "deb http://ppa.launchpad.net/jonathonf/{{ repo[ansible_distribution] }}/ubuntu {{ release[ansible_distribution_release] }} main"
-    filename: zfs-linux
-  vars:
-    repo:
-      Debian: zfs-debian
-      Ubuntu: zfs
-    release:
-      # Debian
-      stretch: bionic
-      buster: bionic
-      bullseye: focal
-      # Ubuntu
-      xenial: xenial
-      bionic: bionic
-      cosmic: cosmic
-      focal: focal
-      devel: devel
-
 - name: Install zfs-dkms
   apt:
     name: zfs-dkms
