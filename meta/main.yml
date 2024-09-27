@@ -6,19 +6,12 @@ galaxy_info:
 
   license: CC-BY-SA
 
-  min_ansible_version: 2.5
+  min_ansible_version: "2.15"
 
   platforms:
-    - name: Ubuntu
-      versions:
-        - xenial
-        - bionic
-        - cosmic
-        - devel
     - name: Debian
       versions:
-        - stretch
-        - buster
+        - bookworm
 
   galaxy_tags:
     - zfs
